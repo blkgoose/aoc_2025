@@ -19,10 +19,17 @@
           autoWire = [ "packages" "apps" "checks" ];
         };
 
-        devShells.default = pkgs.mkShell {
+        devShells.default = let
+          cabal-watch-tests = pkgs.writeShellScriptBin "cabal-watch-tests" ''
+            while true; do 
+              ${pkgs.inotify-tools}/bin/inotifywait -e modify -r ./; 
+              cabal test
+            done
+          '';
+        in pkgs.mkShell {
           name = "aoc-dev-shell";
           inputsFrom = [ config.haskellProjects.default.outputs.devShell ];
-          nativeBuildInputs = [ ];
+          nativeBuildInputs = [ cabal-watch-tests ];
         };
       };
     };

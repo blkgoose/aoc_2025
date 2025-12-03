@@ -4,11 +4,19 @@ import Data.List.Split (splitOn)
 import Utils (trace, range)
 
 execute :: String -> (Int, Int)
-execute inputLine = do
-    let [from, to] = map read $ splitOn "-" inputLine
-        rangeIds = trace $ range from to
+execute input = do
+    let groups = splitOn "," input
+        allGroups = map (map read . splitOn "-") groups :: [[Int]]
+
+        rangeIds = concatMap (\r ->
+                       let (start, end) = makeTuple r
+                       in range start end
+                   ) allGroups
 
     (sum $ filter isInvalid rangeIds, 0)
+
+makeTuple :: [Int] -> (Int, Int)
+makeTuple [a, b] = (a, b)
 
 isInvalid :: Int -> Bool
 isInvalid id

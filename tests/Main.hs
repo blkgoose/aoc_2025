@@ -44,3 +44,6 @@ day2Spec = do
 
         it "returns invalid id number in range" $ do
             fst (Day2.execute "10-33") `shouldBe` 11+22+33
+
+        it "sums multiple ranges" $ do
+            fst (Day2.execute "11-13,22-33") `shouldBe` 11+22+33

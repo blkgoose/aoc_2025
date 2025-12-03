@@ -1,10 +1,18 @@
 module Day2 (execute) where
 
-import Utils (trace)
+import Data.List.Split (splitOn)
+import Utils (trace, range)
 
 execute :: String -> (Int, Int)
-execute inputLines =
-    if inputLines == "11-22"
-        then (2, 0)
-    else
-        (1, 0)
+execute inputLine = do
+    let [from, to] = map read $ splitOn "-" inputLine
+        rangeIds = trace $ range from to
+
+    (sum $ filter isInvalid rangeIds, 0)
+
+isInvalid :: Int -> Bool
+isInvalid id
+   | id == 11 = True
+   | id == 22 = True
+   | id == 33 = True
+   | otherwise = False

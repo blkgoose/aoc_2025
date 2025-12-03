@@ -37,7 +37,10 @@ day2Spec :: Spec
 day2Spec = do
     describe "day 2 tests" $ do
         it "returns 1 for 1 invalid id" $ do
-            fst (Day2.execute "11-13") `shouldBe` 1
+            fst (Day2.execute "11-13") `shouldBe` 11
 
         it "returns 2 for 2 invalid ids" $ do
-            fst (Day2.execute "11-22") `shouldBe` 2
+            fst (Day2.execute "11-22") `shouldBe` 11+22
+
+        it "returns invalid id number in range" $ do
+            fst (Day2.execute "10-33") `shouldBe` 11+22+33

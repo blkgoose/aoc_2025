@@ -5,6 +5,10 @@ import Test.Hspec
 
 main :: IO ()
 main = hspec $ do
+  day1Spec
+
+day1Spec :: Spec
+day1Spec = do
   describe "gives the password" $ do
     it "returns 0 if it never stops on 0" $ do
       fst (execute ["L10", "R20"]) `shouldBe` 0

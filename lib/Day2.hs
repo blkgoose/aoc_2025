@@ -19,8 +19,7 @@ makeTuple :: [Int] -> (Int, Int)
 makeTuple [a, b] = (a, b)
 
 isInvalid :: Int -> Bool
-isInvalid id
-   | id == 11 = True
-   | id == 22 = True
-   | id == 33 = True
-   | otherwise = False
+isInvalid id = 
+    let digits = show id
+        (left, right) = splitAt (length digits `div` 2) digits
+    in left == right

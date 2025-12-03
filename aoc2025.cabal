@@ -12,7 +12,8 @@ common warnings
     ghc-options: -Wall
 
 library aoc2025-lib
-    exposed-modules: Day1
+    exposed-modules: Utils,
+                     Day1
     hs-source-dirs: lib
     build-depends: base
     default-language: Haskell2010
@@ -20,13 +21,16 @@ library aoc2025-lib
 executable aoc2025
     import:           warnings
     main-is:          Main.hs
-    build-depends:    base ^>=4.20.2.0, aoc2025-lib
+    build-depends:    base ^>=4.20.2.0,
+                      aoc2025-lib,
     hs-source-dirs:   app
     default-language: Haskell2010
 
 test-suite tests
   type: exitcode-stdio-1.0
   main-is: Main.hs
-  build-depends: base, hspec, aoc2025-lib
+  build-depends: base,
+                 hspec,
+                 aoc2025-lib,
   hs-source-dirs: tests
   default-language: Haskell2010

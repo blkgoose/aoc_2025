@@ -1,5 +1,7 @@
 module Day1 (execute) where
 
+import Utils (trace)
+
 execute :: [String] -> (Int, Int)
 execute inputLines = do
     let input = map parseStep inputLines
@@ -17,15 +19,19 @@ process (position, count) step = do
 
 process' :: (Int, Int) -> Int -> (Int, Int)
 process' (position, count) step = do
-    let newPosition = (position + step)
-        counter = if (newPosition >= 100 || newPosition <= 0 && position /= 0)
-            then count + 1
-            else count
+    let allPositions' = tail $ range position (position + step)
+        allPositions = map (`mod` 100) allPositions'
+        counter = length . filter (== 0) $ allPositions
 
-    (newPosition `mod` 100, counter)
+    (last allPositions, count + counter)
 
 parseStep :: String -> Int
 parseStep (dir:steps)
     | dir == 'L' = -read steps
     | dir == 'R' = read steps
     | otherwise = 0
+
+range :: Int -> Int -> [Int]
+range a b
+  | a <= b    = [a .. b]
+  | otherwise = [a, a-1 .. b]

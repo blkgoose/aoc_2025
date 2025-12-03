@@ -1,8 +1,9 @@
 module Day1 (execute) where
 
-execute :: [String] -> Int
-execute inputLines =
-    snd $ foldl process (50, 0) $ map parseStep inputLines
+execute :: [String] -> (Int, Int)
+execute inputLines = do
+    let part1 = snd $ foldl process (50, 0) $ map parseStep inputLines
+    (part1, 0)
 
 process :: (Int, Int) -> Int -> (Int, Int)
 process (position, count) step = do

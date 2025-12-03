@@ -1,11 +1,13 @@
 module Main where
 
 import Day1
+import Day2
 import Test.Hspec
 
 main :: IO ()
 main = hspec $ do
   day1Spec
+  day2Spec
 
 day1Spec :: Spec
 day1Spec = do
@@ -30,3 +32,9 @@ day1Spec = do
 
     it "returns 2 if it goes through 0 twice in 1 turn" $ do
       snd (Day1.execute ["R150"]) `shouldBe` 2
+
+day2Spec :: Spec
+day2Spec = do
+    describe "day 2 tests" $ do
+        it "returns 1 for 1 invalid id" $ do
+            fst (Day2.execute "11-13") `shouldBe` 1

@@ -23,6 +23,7 @@
           cabal-watch-tests = pkgs.writeShellScriptBin "cabal-watch-tests" ''
             while true; do 
               ${pkgs.inotify-tools}/bin/inotifywait -e modify -r ./; 
+              clear
               cabal test
             done
           '';

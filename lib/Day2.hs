@@ -20,19 +20,19 @@ isInvalid' id =
     let id' = show id
         halfId = take (length id' `div` 2) id'
 
-    in something halfId id'
+    in isInternallyRepeating halfId id'
 
 
-something :: [Char] -> String -> Bool
-something [] _ = False
-something block match =
+isInternallyRepeating :: [Char] -> String -> Bool
+isInternallyRepeating [] _ = False
+isInternallyRepeating block match =
     let repeatFor = length match `div` length block
         block' = concat $ replicate repeatFor block
     in
         if block' == match then
             True
         else
-            something (init block) match
+            isInternallyRepeating (init block) match
 
 isInvalid :: Int -> Bool
 isInvalid id =

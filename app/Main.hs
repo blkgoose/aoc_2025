@@ -12,7 +12,7 @@ main = do
     case args of
         (day:_) -> do 
             content <- catch (readFile $ "app/day" ++ day ++ ".input") ignore
-            input <- return $ lines content
+            let input = lines content
 
             case day of
                 "1" -> day1 input

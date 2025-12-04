@@ -10,16 +10,19 @@ main :: IO ()
 main = do
     args <- getArgs
     case args of
-        (day:_) -> do 
-            content <- catch (readFile $ "app/day" ++ day ++ ".input") ignore
-            let input = lines content
+        (day:_) -> runDay (read day)
+        _       -> mapM_ runDay [1 .. 12]
 
-            case day of
-                "1" -> day1 input
-                "2" -> day2 input
-                _   -> putStrLn "Day not implemented."
-        _     -> putStrLn "Wrong number of arguments. Usage: run <day>"
+runDay :: Int -> IO ()
+runDay day = do
+    content <- catch (readFile $ "app/day" ++ show day ++ ".input") ignore
+    let input = lines content
 
+    putStrLn $ "\n=== Day " ++ show day ++ " ==="
+    case day of
+        1 -> day1 input
+        2 -> day2 input
+        _   -> putStrLn "Day not implemented."
 
 ignore :: IOError -> IO String
 ignore _ = return ""

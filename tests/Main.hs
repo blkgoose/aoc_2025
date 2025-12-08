@@ -117,3 +117,12 @@ day3Spec = do
                 |> Day3.execute
                 |> fst
                 |> (`shouldBe` 92)
+
+        it "solves the test input" $ do
+            ["987654321111111",
+             "811111111111119",
+             "234234234234278",
+             "818181911112111"]
+                |> Day3.execute
+                |> fst
+                |> (`shouldBe` 357)

@@ -21,10 +21,12 @@ process acc [] = foldl ((+) . (*10)) 0 acc
 process [] (x:xs) = process [x] xs
 process [a] (x:xs) = process [a, x] xs
 process [a, b] (x:xs) =
-    if x > b then
-        process [a, x] xs
-    else if b > a then
+    if b > a then
         process [b, x] xs
+
+    else if x > b then
+        process [a, x] xs
+
     else
         process [a, b] xs
 

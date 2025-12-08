@@ -3,13 +3,14 @@ module Day3 where
 import Data.Char (digitToInt)
 
 import Flow
-import Utils (trace)
 
 execute :: [String] -> (Int, Int)
 execute input =
-    ( map (processLine 2) input
+    ( input
+        |> map (processLine 2)
         |> sum
-    , map (processLine 12) input
+    , input
+        |> map (processLine 12)
         |> sum
     )
 

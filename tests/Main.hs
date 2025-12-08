@@ -138,7 +138,7 @@ day3Spec = do
 day6Spec :: Spec
 day6Spec = do
     describe "day 6 tests" $ do
-        it "sums a column" $ do
+        it "multiplies a column" $ do
             ["123",
              " 45",
              "  6",
@@ -146,3 +146,12 @@ day6Spec = do
                 |> Day6.execute
                 |> fst
                 |> (`shouldBe` 123 * 45 * 6)
+
+        it "solves the test input" $ do
+            ["123 328  51 64 ",
+             " 45 64  387 23 ",
+             "  6 98  215 314",
+             "*   +   *   +  "]
+                |> Day6.execute
+                |> fst
+                |> (`shouldBe` 4277556)

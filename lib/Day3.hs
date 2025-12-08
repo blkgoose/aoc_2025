@@ -9,7 +9,8 @@ execute :: [String] -> (Int, Int)
 execute input =
     ( map (processLine 2) input
         |> sum
-    , 0
+    , map (processLine 12) input
+        |> sum
     )
 
 processLine :: Int -> [Char] -> Int
@@ -21,13 +22,11 @@ processLine buffenLen line =
 
 process :: [Int] -> [Int] -> Int
 process acc [] = foldl ((+) . (*10)) 0 acc
-process [a, b] (x:xs) =
-    if b > a then
-        process [b, x] xs
+process acc (x:xs) =
+    process (reduce $ acc ++ [x]) xs
 
-    else if x > b then
-        process [a, x] xs
-
-    else
-        process [a, b] xs
-
+reduce :: Ord a => [a] -> [a]
+reduce (x:y:xs)
+    | y > x     = y : xs
+    | otherwise = x : reduce (y:xs)
+reduce _ = []

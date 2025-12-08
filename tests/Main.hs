@@ -111,3 +111,9 @@ day3Spec = do
                 |> Day3.execute
                 |> fst
                 |> (`shouldBe` 89)
+
+        it "returns 78 for 234234234234278" $ do
+            ["818181911112111"]
+                |> Day3.execute
+                |> fst
+                |> (`shouldBe` 92)

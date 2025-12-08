@@ -14,11 +14,17 @@ processLine :: [Char] -> Int
 processLine line = 
     line
         |> map (\c -> read [c] :: Int)
-        |> process
+        |> process []
 
-process :: [Int] -> Int
-process battery = 
-    if battery == [9, 8, 7, 6, 5, 4, 3, 2, 1, 1, 1, 1, 1, 1, 1]
-    then 98
-    else 89
+process :: [Int] -> [Int] -> Int
+process acc [] = foldl ((+) . (*10)) 0 acc
+process [] (x:xs) = process [x] xs
+process [a] (x:xs) = process [a, x] xs
+process [a, b] (x:xs) =
+    if x > b then
+        process [a, x] xs
+    else if b > a then
+        process [b, x] xs
+    else
+        process [a, b] xs
 

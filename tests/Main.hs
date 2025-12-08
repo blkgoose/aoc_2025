@@ -3,6 +3,7 @@ module Main where
 import Day1
 import Day2
 import Day3
+import Day6
 
 import Flow
 import Test.Hspec
@@ -12,6 +13,7 @@ main = hspec $ do
   day1Spec
   day2Spec
   day3Spec
+  day6Spec
 
 day1Spec :: Spec
 day1Spec = do
@@ -132,3 +134,15 @@ day3Spec = do
                 |> Day3.execute
                 |> snd
                 |> (`shouldBe` 987654321111)
+
+day6Spec :: Spec
+day6Spec = do
+    describe "day 6 tests" $ do
+        it "sums a column" $ do
+            ["123",
+             " 45",
+             "  6",
+             "*  "]
+                |> Day6.execute
+                |> fst
+                |> (`shouldBe` 123 * 45 * 6)

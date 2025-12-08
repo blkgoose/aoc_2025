@@ -6,6 +6,7 @@ import Control.Exception (catch)
 import Day1
 import Day2
 import Day3
+import Day6
 
 main :: IO ()
 main = do
@@ -24,6 +25,7 @@ runDay day = do
         1 -> day1 input
         2 -> day2 input
         3 -> day3 input
+        6 -> day6 input
         _   -> putStrLn "Day not implemented."
 
 ignore :: IOError -> IO String
@@ -42,3 +44,7 @@ day2 input
 day3 :: [String] -> IO ()
 day3 input = do
     print $ Day3.execute input
+
+day6 :: [String] -> IO ()
+day6 input = do
+    print $ Day6.execute input

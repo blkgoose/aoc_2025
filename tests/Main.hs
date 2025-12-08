@@ -2,12 +2,15 @@ module Main where
 
 import Day1
 import Day2
+import Day3
+
 import Test.Hspec
 
 main :: IO ()
 main = hspec $ do
   day1Spec
   day2Spec
+  day3Spec
 
 day1Spec :: Spec
 day1Spec = do
@@ -53,3 +56,9 @@ day2Spec = do
 
         it "solves the test input for part 2" $ do
             snd (Day2.execute "11-22,95-115,998-1012,1188511880-1188511890,222220-222224,1698522-1698528,446443-446449,38593856-38593862,565653-565659,824824821-824824827,2121212118-2121212124") `shouldBe` 4174379265
+
+day3Spec :: Spec
+day3Spec = do
+    describe "day 3 tests" $ do
+        it "returns 98 for 987654321111111" $ do
+            fst (Day3.execute ["987654321111111"]) `shouldBe` 98

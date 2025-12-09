@@ -12,7 +12,7 @@ range a b
   | otherwise = [a, a-1 .. b]
 
 groupWhile :: (a -> Bool) -> [a] -> [[a]]
-groupWhile pred line = foldl (step) [] line
+groupWhile pred line = reverse $ foldl (step) [] line
     where
         step [] x = [[x]]
         step (g:gs) x

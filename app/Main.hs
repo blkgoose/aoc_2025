@@ -3,6 +3,8 @@ module Main (main) where
 import System.Environment (getArgs)
 import Control.Exception (catch)
 
+import Flow
+
 import Day1
 import Day2
 import Day3
@@ -22,13 +24,21 @@ runDay day = do
     let input = lines content
 
     putStrLn $ "\n=== Day " ++ show day ++ " ==="
-    case day of
-        1 -> print $ Day1.execute input
-        2 -> print $ Day2.execute input
-        3 -> print $ Day3.execute input
-        5 -> print $ Day5.execute input
-        6 -> print $ Day6.execute input
-        _   -> putStrLn "Day not implemented."
+    let run = case day of
+            1 -> Just . Day1.execute
+            2 -> Just . Day2.execute
+            3 -> Just . Day3.execute
+            5 -> Just . Day5.execute
+            6 -> Just . Day6.execute
+            _ -> \_ -> Nothing
+
+    run input
+        |> maybe ("No implementation for this day.") showResult
+        |> putStrLn
+
+showResult :: (Show a, Show b) => (a, b) -> String
+showResult (part1, part2) =
+    "Part 1: " ++ show part1 ++ "\nPart 2: " ++ show part2
 
 ignore :: IOError -> IO String
 ignore _ = return ""

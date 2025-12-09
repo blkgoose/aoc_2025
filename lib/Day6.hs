@@ -1,4 +1,4 @@
-module Day6 where
+module Day6 (execute) where
 
 import Data.List (transpose)
 import Data.Char (isDigit)

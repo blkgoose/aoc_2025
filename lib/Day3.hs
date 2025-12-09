@@ -1,4 +1,4 @@
-module Day3 where
+module Day3 (execute) where
 
 import Data.Char (digitToInt)
 

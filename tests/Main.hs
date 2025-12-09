@@ -155,3 +155,21 @@ day6Spec = do
                 |> Day6.execute
                 |> fst
                 |> (`shouldBe` 4277556)
+
+        it "sums the column for part 2" $ do
+            ["64 ",
+             "23 ",
+             "314",
+             "+  "]
+                |> Day6.execute
+                |> snd
+                |> (`shouldBe` 4 + 431 + 623)
+
+        it "solves the test input for part 2" $ do
+            ["123 328  51 64 ",
+             " 45 64  387 23 ",
+             "  6 98  215 314",
+             "*   +   *   +  "]
+                |> Day6.execute
+                |> snd
+                |> (`shouldBe` 3263827)

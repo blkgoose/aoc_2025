@@ -206,3 +206,19 @@ day4Spec = do
               |> Day4.execute
               |> fst
               |> (`shouldBe` 3)
+
+        it "solves the test input for part 2" $ do
+            ["1-3",
+             "10-14",
+             "16-20",
+             "12-18",
+             "",
+             "1",
+             "5",
+             "8",
+             "11",
+             "17",
+             "32" ]
+                |> Day4.execute
+                |> snd
+                |> (`shouldBe` 14)

@@ -22,29 +22,11 @@ runDay day = do
 
     putStrLn $ "\n=== Day " ++ show day ++ " ==="
     case day of
-        1 -> day1 input
-        2 -> day2 input
-        3 -> day3 input
-        6 -> day6 input
+        1 -> print $ Day1.execute input
+        2 -> print $ Day2.execute input
+        3 -> print $ Day3.execute input
+        6 -> print $ Day6.execute input
         _   -> putStrLn "Day not implemented."
 
 ignore :: IOError -> IO String
 ignore _ = return ""
-
-day1 :: [String] -> IO ()
-day1 input = do
-    print $ Day1.execute input
-
-day2 :: [String] -> IO ()
-day2 input
-    | [x] <- input = do
-        print $ Day2.execute x
-    | otherwise = putStrLn "Invalid input for day 2."
-
-day3 :: [String] -> IO ()
-day3 input = do
-    print $ Day3.execute input
-
-day6 :: [String] -> IO ()
-day6 input = do
-    print $ Day6.execute input

@@ -1,9 +1,10 @@
 module Day6 where
 
-import Data.List (transpose)
+import Data.List (transpose, inits, tails)
 import Utils (trace)
-import Data.Char (isSpace)
+import Data.Char (isSpace, isDigit)
 import Data.List.Split (splitOn, chunksOf)
+
 import Flow
 
 execute :: [String] -> (Int, Int)
@@ -14,25 +15,13 @@ execute input =
                     |> map processColumn
                     |> sum
         part2 = input
-                    |> map (smartSplit " ")
                     |> transpose
-                    |> map reverse
-                    |> map processColumn'
+                    |> groupWhile (\l -> trim l /= "")
+                    |> map moveSymToFront
+                    |> map processColumn
                     |> sum
 
     in (part1, part2)
-
-processColumn' :: [String] -> Int
-processColumn' (sym:values) =
-    let v = values
-                |> reverse
-                |> transpose
-                |> map trim
-                |> map read
-    in if trim sym == "*" then
-           foldl (*) 1 v
-       else
-           sum v
 
 processColumn :: [String] -> Int
 processColumn ("*":values) =
@@ -44,8 +33,16 @@ trim :: String -> String
 trim = f . f
    where f = reverse . dropWhile isSpace
 
-smartSplit :: String -> String -> [String]
-smartSplit delim str =
-    let parts = splitOn delim str
-        maxLen = 3
-    in map (take maxLen) $ chunksOf (maxLen + 1) str
+groupWhile :: (String -> Bool) -> [String] -> [[String]]
+groupWhile pred line = foldl (step) [] line
+    where
+        step [] x = [[x]]
+        step (g:gs) x
+            | pred x    = (g ++ [x]) : gs
+            | otherwise = [] : (g:gs)
+
+moveSymToFront :: [String] -> [String]
+moveSymToFront (x:xs) =
+    let sym = filter (not . isDigit) x |> trim
+        rest = map (filter isDigit) (x:xs)
+    in sym : rest

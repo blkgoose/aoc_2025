@@ -13,12 +13,11 @@ execute input =
     in (part1 grid, part2 grid)
 
 part1 :: Grid -> Int
-part1 grid' =
-    let grid = zipMatrix grid'
-    in grid
-        |> concatMap (map (isSpotGood grid'))
-        |> filter id
-        |> length
+part1 grid = grid
+    |> zipMatrix
+    |> concat
+    |> filter (isSpotGood grid)
+    |> length
 
 isSpotGood :: Grid -> ((Int, Int), Spot) -> Bool
 isSpotGood _ (_, Space) = False

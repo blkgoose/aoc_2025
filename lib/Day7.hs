@@ -2,6 +2,7 @@ module Day7 (execute) where
 
 import Utils (makeGrid, Coord, Grid)
 import Data.Array
+import Data.Maybe (fromMaybe)
 
 import Flow
 
@@ -40,30 +41,24 @@ stepCell :: Grid Spot -> Coord -> Spot
 stepCell grid (0,c) = grid ! (0,c)
 stepCell grid (r,c) =
     let me = grid ! (r,c)
+        left = fromMaybe Space $ safeGet (r,c-1) grid
+        right = fromMaybe Space $ safeGet (r,c+1) grid
         above = grid ! (r-1,c)
-    in case (me, above) of
-        (Space, Generator)       -> Beam
-        (Splitter, Beam)         -> TriggeredSplitter
-        (Space, Beam)            -> Beam
-        _                        -> me
+    in case ([left, me, right], above) of
+        ([_, Space,                 _], Generator) -> Beam
+        ([_, Splitter,              _], Beam)      -> TriggeredSplitter
+        ([_, Space,                 _], Beam)      -> Beam
+        ([TriggeredSplitter, Space, _], _)         -> Beam
+        ([_, Space, TriggeredSplitter], _)         -> Beam
+        _                             -> me
+    where
+        safeGet :: Coord -> Grid Spot -> Maybe Spot
+        safeGet idx arr =
+          if inRange (bounds arr) idx
+            then Just (arr ! idx)
+            else Nothing
 
 parseSpot :: Char -> Spot
 parseSpot 'S' = Generator
 parseSpot '^' = Splitter
 parseSpot '.' = Space
-
-renderGrid :: Grid Spot -> [String]
-renderGrid grid =
-    [ [ renderSpot (grid ! (x, y)) | y <- [yMin .. yMax] ]
-        | x <- [xMin .. xMax]
-        ]
-    where
-        renderSpot Splitter  = '^'
-        renderSpot Generator = 'S'
-        renderSpot Space     = '.'
-        renderSpot Beam      = '|'
-
-        (xMin, yMin) = fst (bounds grid)
-        (xMax, yMax) = snd (bounds grid)
-        width = yMax - yMin + 1
-        height = xMax - xMin + 1

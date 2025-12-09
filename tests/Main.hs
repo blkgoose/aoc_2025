@@ -279,3 +279,13 @@ day7Spec = do
                 |> Day7.execute
                 |> fst
                 |> (`shouldBe` 1)
+
+        it "counts the number of splits with 2 splitters" $ do
+            [".......S.......",
+             "...............",
+             ".......^.......",
+             "...............",
+             "......^.^......"]
+                |> Day7.execute
+                |> fst
+                |> (`shouldBe` 3)

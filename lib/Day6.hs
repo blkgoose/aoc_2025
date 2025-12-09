@@ -2,6 +2,7 @@ module Day6 where
 
 import Data.List (transpose)
 import Data.Char (isSpace, isDigit)
+import Utils (groupWhile)
 
 import Flow
 
@@ -30,14 +31,6 @@ processColumn ("+":values) =
 trim :: String -> String
 trim = f . f
    where f = reverse . dropWhile isSpace
-
-groupWhile :: (String -> Bool) -> [String] -> [[String]]
-groupWhile pred line = foldl (step) [] line
-    where
-        step [] x = [[x]]
-        step (g:gs) x
-            | pred x    = (g ++ [x]) : gs
-            | otherwise = [] : (g:gs)
 
 moveSymToFront :: [String] -> [String]
 moveSymToFront (x:xs) =

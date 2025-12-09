@@ -16,12 +16,12 @@ part1 :: Grid -> Int
 part1 grid = grid
     |> zipMatrix
     |> concat
-    |> filter (isSpotGood grid)
+    |> filter (checkSpot grid)
     |> length
 
-isSpotGood :: Grid -> ((Int, Int), Spot) -> Bool
-isSpotGood _ (_, Space) = False
-isSpotGood grid ((x, y), Roll) =
+checkSpot :: Grid -> ((Int, Int), Spot) -> Bool
+checkSpot _ (_, Space) = False
+checkSpot grid ((x, y), Roll) =
     let neighbors = adjacents x y grid
         rollCount = length $ filter (== Roll) neighbors
     in rollCount < 4
@@ -50,7 +50,7 @@ part2 grid =
 
         countAndUpdate :: Grid -> ((Int, Int), Spot) -> (Spot, Int)
         countAndUpdate g v@(_, s)
-            | isSpotGood g v && s == Roll = (Space, 1)
+            | checkSpot g v && s == Roll  = (Space, 1)
             | s == Space                  = (Space, 0)
             | otherwise                   = (Roll, 0)
 

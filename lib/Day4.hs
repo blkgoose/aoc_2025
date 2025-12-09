@@ -11,9 +11,17 @@ execute input =
     let [database', ingredients'] = groupWhile (not . null) input
         ingredients = map read ingredients' :: [Int]
         database = map (splitOn "-") database' |> map (\[a,b] -> (read a, read b)) :: [(Int, Int)]
-    in ( filter (isInRange database) ingredients |> length
-       , 0
+    in ( part1 database ingredients
+       , part2 database
        )
+
+part1 :: [(Int, Int)] -> [Int] -> Int
+part1 database ingredients =
+    length $ filter (isInRange database) ingredients
+
+part2 :: [(Int, Int)] -> Int
+part2 database =
+    0
 
 isInRange :: [(Int, Int)] -> Int -> Bool
 isInRange database n =

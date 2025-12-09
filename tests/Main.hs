@@ -158,6 +158,21 @@ day4Spec = do
                 |> fst
                 |> (`shouldBe` 4)
 
+        it "solves the test input" $ do
+            ["..@@.@@@@.",
+             "@@@.@.@.@@",
+             "@@@@@.@.@@",
+             "@.@@@@..@.",
+             "@@.@@@@.@@",
+             ".@@@@@@@.@",
+             ".@.@.@.@@@",
+             "@.@@@.@@@@",
+             ".@@@@@@@@.",
+             "@.@.@@@.@."]
+                |> Day4.execute
+                |> fst
+                |> (`shouldBe` 13)
+
 day5Spec :: Spec
 day5Spec = do
     describe "day 5 tests" $ do

@@ -11,7 +11,7 @@ data Spot = Roll | Space deriving (Eq, Show)
 
 execute :: [String] -> (Int, Int)
 execute input =
-    let grid = makeGrid $ map (map rollOrSpace) input
+    let grid = makeGrid $ map (map parseSpot) input
     in (part1 grid, part2 grid)
 
 part1 :: Grid -> Int
@@ -62,6 +62,6 @@ step grid =
         newGrid = grid // [ (c, Space) | c <- changes ]
     in (newGrid, length changes)
 
-rollOrSpace :: Char -> Spot
-rollOrSpace '@' = Roll
-rollOrSpace '.' = Space
+parseSpot :: Char -> Spot
+parseSpot '@' = Roll
+parseSpot '.' = Space

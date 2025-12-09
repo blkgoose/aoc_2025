@@ -1,9 +1,7 @@
 module Day6 where
 
-import Data.List (transpose, inits, tails)
-import Utils (trace)
+import Data.List (transpose)
 import Data.Char (isSpace, isDigit)
-import Data.List.Split (splitOn, chunksOf)
 
 import Flow
 

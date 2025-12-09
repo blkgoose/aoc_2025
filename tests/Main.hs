@@ -180,7 +180,7 @@ day4Spec :: Spec
 day4Spec = do
     describe "day 4 tests" $ do
         it "returns 1 for 1 fresh ingredient" $ do
-            ["3-5", "", "2"]
+            ["3-5", "", "4"]
               |> Day4.execute
               |> fst
               |> (`shouldBe` 1)

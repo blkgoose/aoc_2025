@@ -1,6 +1,6 @@
 module Day1 (execute) where
 
-import Utils (trace, range)
+import Utils (range)
 
 execute :: [String] -> (Int, Int)
 execute inputLines = do

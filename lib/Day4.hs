@@ -50,13 +50,10 @@ part2 grid =
             in (newGrid, changes)
 
         countAndUpdate :: Grid -> ((Int, Int), Spot) -> (Spot, Int)
-        countAndUpdate g v@((r, c), s) =
-            let spot = isSpotGood g v
-                isSpace = s == Space
-            in case (spot, isSpace) of
-                (True,  False) -> (Space, 1)
-                (False, True)  -> (Space, 0)
-                (False, False) -> (Roll,  0)
+        countAndUpdate g v@(_, s)
+            | isSpotGood g v && s == Roll = (Space, 1)
+            | s == Space                  = (Space, 0)
+            | otherwise                   = (Roll, 0)
 
 safeIndex :: [a] -> Int -> Maybe a
 safeIndex xs i

@@ -1,83 +1,67 @@
 module Day4 (execute) where
 
 import Data.Maybe (mapMaybe)
+import Data.Array
 
 import Flow
 
-type Grid = [[Spot]]
+type Coord = (Int, Int)
+type Grid = Array Coord Spot
 data Spot = Roll | Space deriving (Eq, Show)
 
 execute :: [String] -> (Int, Int)
 execute input =
-    let grid = map (map rollOrSpace) input
+    let grid = makeGrid $ map (map rollOrSpace) input
     in (part1 grid, part2 grid)
 
 part1 :: Grid -> Int
-part1 grid = grid
-    |> zipMatrix
-    |> concat
-    |> filter (checkSpot grid)
-    |> length
-
-checkSpot :: Grid -> ((Int, Int), Spot) -> Bool
-checkSpot _ (_, Space) = False
-checkSpot grid ((x, y), Roll) =
-    let neighbors = adjacents x y grid
-        rollCount = length $ filter (== Roll) neighbors
-    in rollCount < 4
+part1 grid =
+    let (finalGrid, changes) = step grid
+    in changes
 
 part2 :: Grid -> Int
-part2 grid =
-    until isDelta0 process (grid, 0, -1)
-        |> \(_, count, _) -> count
-    where 
-        isDelta0 :: (Grid, Int, Int) -> Bool
-        isDelta0 (_, _, 0) = True
-        isDelta0 _         = False
-
-        process :: (Grid, Int, Int) -> (Grid, Int, Int)
-        process (grid, count, _) =
-            let (newGrid, changes) = step grid
-            in (newGrid, count + changes, changes)
-
-        step :: Grid -> (Grid, Int)
-        step grid =
-            let m = zipMatrix grid
-                r = map (map (countAndUpdate grid)) m :: [[ (Spot, Int) ]]
-                newGrid = map (map fst) r
-                changes = sum $ map (sum . map snd) r
-            in (newGrid, changes)
-
-        countAndUpdate :: Grid -> ((Int, Int), Spot) -> (Spot, Int)
-        countAndUpdate g v@(_, s)
-            | checkSpot g v && s == Roll  = (Space, 1)
-            | s == Space                  = (Space, 0)
-            | otherwise                   = (Roll, 0)
-
-safeIndex :: [a] -> Int -> Maybe a
-safeIndex xs i
-  | i >= 0 && i < length xs = Just (xs !! i)
-  | otherwise               = Nothing
-
-safeGet :: Int -> Int -> Grid -> Maybe Spot
-safeGet r c mat = do
-  row <- safeIndex mat r
-  safeIndex row c
-
-adjacents :: Int -> Int -> Grid -> [Spot]
-adjacents r c mat = mapMaybe (\(r',c') -> safeGet r' c' mat) neighbors
+part2 grid = go grid 0
   where
-    neighbors = [ (r-1, c-1), (r-1, c), (r-1, c+1)
-                , (r,   c-1),           (r,   c+1)
-                , (r+1, c-1), (r+1, c), (r+1, c+1)
-                ]
+    go g acc =
+      let (g', changes) = step g
+      in if changes == 0
+         then acc
+         else go g' (acc + changes)
 
-zipMatrix :: [[a]] -> [[((Int, Int), a)]]
-zipMatrix m =
-  [ [ ((rowIdx, colIdx), val)
-      | (colIdx, val) <- zip [0..] row ]
-    | (rowIdx, row) <- zip [0..] m ]
+makeGrid :: [[Spot]] -> Grid
+makeGrid rows@(header:_) =
+    let h = length rows
+        w = length header
+        spots = [((i,j), rows !! i !! j) | i <- [0..h-1], j <- [0..w-1]]
+    in array ((0,0),(h-1,w-1)) spots
+
+adjacents :: Coord -> Grid -> [Spot]
+adjacents (x, y) grid =
+    [ grid ! (nx, ny)
+    | dx <- [-1..1], dy <- [-1..1], (dx,dy) /= (0,0)
+    , let nx = x + dx
+    , let ny = y + dy
+    , inRange (bounds grid) (nx, ny)
+    ]
+
+isSpotGood :: Grid -> Coord -> Bool
+isSpotGood grid coord =
+    case grid ! coord of
+        Space -> False
+        Roll  ->
+          let rollCount = length $ filter (== Roll) (adjacents coord grid)
+          in rollCount < 4
+
+step :: Grid -> (Grid, Int)
+step grid =
+    let changes =
+            [ coord
+            | (coord, Roll) <- assocs grid
+            , isSpotGood grid coord
+            ]
+        newGrid = grid // [ (c, Space) | c <- changes ]
+    in (newGrid, length changes)
 
 rollOrSpace :: Char -> Spot
-rollOrSpace '.' = Space
 rollOrSpace '@' = Roll
+rollOrSpace '.' = Space

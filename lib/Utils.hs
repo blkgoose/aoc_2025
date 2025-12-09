@@ -6,6 +6,9 @@ import Data.Char (isSpace)
 trace :: (Show a) => a -> a
 trace x = Debug.trace (show x) x
 
+trace' :: (Show a) => a -> b -> b
+trace' x v = Debug.trace (show x) v
+
 range :: Int -> Int -> [Int]
 range a b
   | a <= b    = [a .. b]

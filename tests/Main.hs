@@ -150,6 +150,14 @@ day4Spec = do
                 |> fst
                 |> (`shouldBe` 1)
 
+        it "does not take the roll if there is no space around it" $ do
+            ["@@@",
+             "@@@",
+             "@@@"]
+                |> Day4.execute
+                |> fst
+                |> (`shouldBe` 4)
+
 day5Spec :: Spec
 day5Spec = do
     describe "day 5 tests" $ do

@@ -3,7 +3,7 @@ module Main where
 import Day1
 import Day2
 import Day3
-import Day4
+import Day5
 import Day6
 
 import Flow
@@ -14,7 +14,7 @@ main = hspec $ do
   day1Spec
   day2Spec
   day3Spec
-  day4Spec
+  day5Spec
   day6Spec
 
 day1Spec :: Spec
@@ -176,18 +176,18 @@ day6Spec = do
                 |> snd
                 |> (`shouldBe` 3263827)
 
-day4Spec :: Spec
-day4Spec = do
-    describe "day 4 tests" $ do
+day5Spec :: Spec
+day5Spec = do
+    describe "day 5 tests" $ do
         it "returns 1 for 1 fresh ingredient" $ do
             ["3-5", "", "4"]
-              |> Day4.execute
+              |> Day5.execute
               |> fst
               |> (`shouldBe` 1)
 
         it "returns 0 for 0 fresh ingredient" $ do
             ["3-5", "", "7"]
-              |> Day4.execute
+              |> Day5.execute
               |> fst
               |> (`shouldBe` 0)
 
@@ -203,7 +203,7 @@ day4Spec = do
              "11",
              "17",
              "32" ]
-              |> Day4.execute
+              |> Day5.execute
               |> fst
               |> (`shouldBe` 3)
 
@@ -219,6 +219,6 @@ day4Spec = do
              "11",
              "17",
              "32" ]
-                |> Day4.execute
+                |> Day5.execute
                 |> snd
                 |> (`shouldBe` 14)

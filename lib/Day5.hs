@@ -1,4 +1,4 @@
-module Day4 (execute) where
+module Day5 (execute) where
 
 import Utils (groupWhile)
 import Data.Char (isSpace)

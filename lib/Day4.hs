@@ -11,21 +11,48 @@ data Spot = Roll | Space deriving (Eq, Show)
 execute :: [String] -> (Int, Int)
 execute input =
     let grid = map (map rollOrSpace) input
-    in (part1 grid, 0)
+    in (part1 grid, part2 grid)
 
 part1 :: Grid -> Int
 part1 grid' =
     let grid = zipMatrix grid'
     in grid
-        |> concatMap (map isSpotGood)
+        |> concatMap (map (isSpotGood grid'))
         |> filter id
         |> length
-    where
-        isSpotGood (_, Space) = False
-        isSpotGood ((x, y), Roll) =
-            let neighbors = adjacents x y grid'
-                rollCount = length $ filter (== Roll) neighbors
-            in rollCount < 4
+
+isSpotGood :: Grid -> ((Int, Int), Spot) -> Bool
+isSpotGood _ (_, Space) = False
+isSpotGood grid ((x, y), Roll) =
+    let neighbors = adjacents x y grid
+        rollCount = length $ filter (== Roll) neighbors
+    in rollCount < 4
+
+part2 :: Grid -> Int
+part2 grid =
+    snd (foldl p (grid, 0) [0..10])
+    where 
+        p :: (Grid, Int) -> Int -> (Grid, Int)
+        p (grid, count) _ =
+            let (newGrid, changes) = step grid
+            in (newGrid, count + changes)
+
+        step :: Grid -> (Grid, Int)
+        step grid =
+            let m = zipMatrix grid
+                r = map (map (countAndUpdate grid)) m :: [[ (Spot, Int) ]]
+                newGrid = map (map fst) r
+                changes = sum $ map (sum . map snd) r
+            in (newGrid, changes)
+
+        countAndUpdate :: Grid -> ((Int, Int), Spot) -> (Spot, Int)
+        countAndUpdate g v@((r, c), s) =
+            let spot = isSpotGood g v
+                isSpace = s == Space
+            in case (spot, isSpace) of
+                (True,  False) -> (Space, 1)
+                (False, True)  -> (Space, 0)
+                (False, False) -> (Roll,  0)
 
 safeIndex :: [a] -> Int -> Maybe a
 safeIndex xs i

@@ -173,6 +173,14 @@ day4Spec = do
                 |> fst
                 |> (`shouldBe` 13)
 
+        it "removes the already counted rolls" $ do
+            ["@.@",
+             "@@.",
+             "@.@"]
+                |> Day4.execute
+                |> snd
+                |> (`shouldBe` 6)
+
 day5Spec :: Spec
 day5Spec = do
     describe "day 5 tests" $ do

@@ -3,10 +3,10 @@ module Day4 (execute) where
 import Data.Maybe (mapMaybe)
 import Data.Array
 
+import Utils (Coord, Grid, makeGrid)
+
 import Flow
 
-type Coord = (Int, Int)
-type Grid = Array Coord Spot
 data Spot = Roll | Space deriving (Eq, Show)
 
 execute :: [String] -> (Int, Int)
@@ -14,12 +14,12 @@ execute input =
     let grid = makeGrid $ map (map parseSpot) input
     in (part1 grid, part2 grid)
 
-part1 :: Grid -> Int
+part1 :: Grid Spot -> Int
 part1 grid =
     let (finalGrid, changes) = step grid
     in changes
 
-part2 :: Grid -> Int
+part2 :: Grid Spot -> Int
 part2 grid = go grid 0
   where
     go g acc =
@@ -28,14 +28,7 @@ part2 grid = go grid 0
          then acc
          else go g' (acc + changes)
 
-makeGrid :: [[Spot]] -> Grid
-makeGrid rows@(header:_) =
-    let h = length rows
-        w = length header
-        spots = [((i,j), rows !! i !! j) | i <- [0..h-1], j <- [0..w-1]]
-    in array ((0,0),(h-1,w-1)) spots
-
-adjacents :: Coord -> Grid -> [Spot]
+adjacents :: Coord -> Grid Spot -> [Spot]
 adjacents (x, y) grid =
     [ grid ! (nx, ny)
     | dx <- [-1..1], dy <- [-1..1], (dx,dy) /= (0,0)
@@ -44,7 +37,7 @@ adjacents (x, y) grid =
     , inRange (bounds grid) (nx, ny)
     ]
 
-isSpotGood :: Grid -> Coord -> Bool
+isSpotGood :: Grid Spot -> Coord -> Bool
 isSpotGood grid coord =
     case grid ! coord of
         Space -> False
@@ -52,7 +45,7 @@ isSpotGood grid coord =
           let rollCount = length $ filter (== Roll) (adjacents coord grid)
           in rollCount < 4
 
-step :: Grid -> (Grid, Int)
+step :: Grid Spot -> (Grid Spot, Int)
 step grid =
     let changes =
             [ coord

@@ -310,3 +310,27 @@ day7Spec = do
                 |> Day7.execute
                 |> fst
                 |> (`shouldBe` 21)
+
+        it "keeps in mind merging splitters" $ do
+            ["..S..",
+             ".....",
+             "..^..",
+             ".....",
+             ".^.^.",
+             "....."]
+                |> Day7.execute
+                |> snd
+                |> (`shouldBe` 4)
+
+        it "keeps in mind a beam mergin into a splitter" $ do
+            ["..S..",
+             ".....",
+             "..^..",
+             ".....",
+             ".^...",
+             ".....",
+             "..^..",
+             "....."]
+                |> Day7.execute
+                |> snd
+                |> (`shouldBe` 4)

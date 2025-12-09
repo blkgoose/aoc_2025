@@ -9,29 +9,43 @@ import Flow
 import Utils (trace, trace')
 
 data Spot = Splitter
-          | TriggeredSplitter
+          | TriggeredSplitter Int
           | Space
           | Generator
-          | Beam
+          | Beam Int
       deriving (Eq, Show)
 
 execute :: [String] -> (Int, Int)
 execute input =
-    let grid = makeGrid $ map (map parseSpot) input
-    in (part1 grid, 0)
+    let grid = input
+                |>  map (map parseSpot)
+                |> makeGrid
+                |> simulate
+    in (part1 grid, part2 grid)
 
 part1 :: Grid Spot -> Int
-part1 grid = go grid
+part1 grid = grid
         |> elems
-        |> filter ((==) TriggeredSplitter)
+        |> filter (\s -> case s of TriggeredSplitter _ -> True; _ -> False)
         |> length
+
+part2 :: Grid Spot -> Int
+part2 grid =
+    let ((_, colMin), (rowMax, colMax)) = bounds (traceGrid grid)
+        lastRow = [ grid ! (rowMax, col) | col <- [colMin .. colMax] ]
+    in filter (isBeam) lastRow
+        |> foldl (\acc (Beam n) -> acc + n) 0
     where
-        go :: Grid Spot -> Grid Spot
-        go state =
-            let state' = step state
-            in if state' == state
-                then state
-                else go state'
+        isBeam :: Spot -> Bool
+        isBeam (Beam _) = True
+        isBeam _        = False
+
+simulate :: Grid Spot -> Grid Spot
+simulate state =
+    let state' = step state
+    in if state' == state
+        then state
+        else simulate state'
 
 step :: Grid Spot -> Grid Spot
 step grid =
@@ -45,12 +59,16 @@ stepCell grid (r,c) =
         right = fromMaybe Space $ safeGet (r,c+1) grid
         above = grid ! (r-1,c)
     in case ([left, me, right], above) of
-        ([_, Space,                 _], Generator) -> Beam
-        ([_, Splitter,              _], Beam)      -> TriggeredSplitter
-        ([_, Space,                 _], Beam)      -> Beam
-        ([TriggeredSplitter, Space, _], _)         -> Beam
-        ([_, Space, TriggeredSplitter], _)         -> Beam
-        _                             -> me
+        ([_,                   Space,     _],                   Generator) -> Beam 1
+        ([_,                   Splitter,  _],                   Beam n)    -> TriggeredSplitter n
+        ([_,                   _,         TriggeredSplitter m], Beam b)    -> Beam (m+b)
+        ([TriggeredSplitter n, _,         _],                   Beam b)    -> Beam (n+b)
+        ([_,                   Space,     _],                   Beam n)    -> Beam n
+        ([TriggeredSplitter n, Space,     TriggeredSplitter m], Space)     -> Beam (n+m)
+        ([TriggeredSplitter n, Space,     _],                   _)         -> Beam n
+        ([_,                   Space,     TriggeredSplitter n], _)         -> Beam n
+        ([_,                   Beam b,    _],                   Beam v)    -> Beam (max b v)
+        _                                                                  -> me
     where
         safeGet :: Coord -> Grid Spot -> Maybe Spot
         safeGet idx arr =
@@ -62,3 +80,16 @@ parseSpot :: Char -> Spot
 parseSpot 'S' = Generator
 parseSpot '^' = Splitter
 parseSpot '.' = Space
+
+traceGrid :: Grid Spot -> Grid Spot
+traceGrid arr =
+    let ((rowMin, colMin), (rowMax, colMax)) = bounds arr
+        showCell (Beam n)            = show n
+        showCell (TriggeredSplitter _) = "T"
+        showCell Splitter            = "^"
+        showCell Generator           = "S"
+        showCell Space               = "."
+        buildRow r = [ showCell (arr ! (r, c)) | c <- [colMin .. colMax] ]
+        gridLines = [ unwords (buildRow r) | r <- [rowMin .. rowMax] ]
+        traced = foldl' (\a line -> trace' line a) arr gridLines
+    in traced

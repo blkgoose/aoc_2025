@@ -19,6 +19,7 @@ library aoc2025-lib
                       Day4,
                       Day5,
                       Day6,
+                      Day7,
     hs-source-dirs:   lib
     build-depends:    base,
                       split,

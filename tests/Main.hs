@@ -6,6 +6,7 @@ import Day3
 import Day4
 import Day5
 import Day6
+import Day7
 
 import Flow
 import Test.Hspec
@@ -18,6 +19,7 @@ main = hspec $ do
   day4Spec
   day5Spec
   day6Spec
+  day7Spec
 
 day1Spec :: Spec
 day1Spec = do
@@ -266,3 +268,14 @@ day6Spec = do
                 |> Day6.execute
                 |> snd
                 |> (`shouldBe` 3263827)
+
+day7Spec :: Spec
+day7Spec = do
+    describe "day 7 tests" $ do
+        it "counts the number of splits with just 1 splitter" $ do
+            [".......S.......",
+             "...............",
+             ".......^......."]
+                |> Day7.execute
+                |> fst
+                |> (`shouldBe` 1)

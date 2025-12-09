@@ -1,6 +1,5 @@
 module Day4 (execute) where
 
-import Utils (trace', trace)
 import Data.Maybe (mapMaybe)
 
 import Flow
@@ -30,12 +29,17 @@ isSpotGood grid ((x, y), Roll) =
 
 part2 :: Grid -> Int
 part2 grid =
-    snd (foldl p (grid, 0) [0..10])
+    until isDelta0 process (grid, 0, -1)
+        |> \(_, count, _) -> count
     where 
-        p :: (Grid, Int) -> Int -> (Grid, Int)
-        p (grid, count) _ =
+        isDelta0 :: (Grid, Int, Int) -> Bool
+        isDelta0 (_, _, 0) = True
+        isDelta0 _         = False
+
+        process :: (Grid, Int, Int) -> (Grid, Int, Int)
+        process (grid, count, _) =
             let (newGrid, changes) = step grid
-            in (newGrid, count + changes)
+            in (newGrid, count + changes, changes)
 
         step :: Grid -> (Grid, Int)
         step grid =

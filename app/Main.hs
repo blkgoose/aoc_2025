@@ -11,6 +11,7 @@ import Day3
 import Day4
 import Day5
 import Day6
+import Day7
 
 main :: IO ()
 main = do
@@ -32,6 +33,7 @@ runDay day = do
             4 -> Just . Day4.execute
             5 -> Just . Day5.execute
             6 -> Just . Day6.execute
+            7 -> Just . Day7.execute
             _ -> \_ -> Nothing
 
     run input

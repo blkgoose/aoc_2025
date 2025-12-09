@@ -3,6 +3,7 @@ module Main where
 import Day1
 import Day2
 import Day3
+import Day4
 import Day5
 import Day6
 
@@ -14,6 +15,7 @@ main = hspec $ do
   day1Spec
   day2Spec
   day3Spec
+  day4Spec
   day5Spec
   day6Spec
 
@@ -137,44 +139,16 @@ day3Spec = do
                 |> snd
                 |> (`shouldBe` 987654321111)
 
-day6Spec :: Spec
-day6Spec = do
-    describe "day 6 tests" $ do
-        it "multiplies a column" $ do
-            ["123",
-             " 45",
-             "  6",
-             "*  "]
-                |> Day6.execute
+day4Spec :: Spec
+day4Spec = do
+    describe "day 4 tests" $ do
+        it "takes the roll if there is space around it" $ do
+            ["...",
+             ".@.",
+             "..."]
+                |> Day4.execute
                 |> fst
-                |> (`shouldBe` 123 * 45 * 6)
-
-        it "solves the test input" $ do
-            ["123 328  51 64 ",
-             " 45 64  387 23 ",
-             "  6 98  215 314",
-             "*   +   *   +  "]
-                |> Day6.execute
-                |> fst
-                |> (`shouldBe` 4277556)
-
-        it "sums the column for part 2" $ do
-            ["64 ",
-             "23 ",
-             "314",
-             "+  "]
-                |> Day6.execute
-                |> snd
-                |> (`shouldBe` 4 + 431 + 623)
-
-        it "solves the test input for part 2" $ do
-            ["123 328  51 64 ",
-             " 45 64  387 23 ",
-             "  6 98  215 314",
-             "*   +   *   +  "]
-                |> Day6.execute
-                |> snd
-                |> (`shouldBe` 3263827)
+                |> (`shouldBe` 1)
 
 day5Spec :: Spec
 day5Spec = do
@@ -222,3 +196,42 @@ day5Spec = do
                 |> Day5.execute
                 |> snd
                 |> (`shouldBe` 14)
+
+day6Spec :: Spec
+day6Spec = do
+    describe "day 6 tests" $ do
+        it "multiplies a column" $ do
+            ["123",
+             " 45",
+             "  6",
+             "*  "]
+                |> Day6.execute
+                |> fst
+                |> (`shouldBe` 123 * 45 * 6)
+
+        it "solves the test input" $ do
+            ["123 328  51 64 ",
+             " 45 64  387 23 ",
+             "  6 98  215 314",
+             "*   +   *   +  "]
+                |> Day6.execute
+                |> fst
+                |> (`shouldBe` 4277556)
+
+        it "sums the column for part 2" $ do
+            ["64 ",
+             "23 ",
+             "314",
+             "+  "]
+                |> Day6.execute
+                |> snd
+                |> (`shouldBe` 4 + 431 + 623)
+
+        it "solves the test input for part 2" $ do
+            ["123 328  51 64 ",
+             " 45 64  387 23 ",
+             "  6 98  215 314",
+             "*   +   *   +  "]
+                |> Day6.execute
+                |> snd
+                |> (`shouldBe` 3263827)

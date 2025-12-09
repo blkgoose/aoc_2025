@@ -1,8 +1,8 @@
 module Day6 where
 
 import Data.List (transpose)
-import Data.Char (isSpace, isDigit)
-import Utils (groupWhile)
+import Data.Char (isDigit)
+import Utils (groupWhile, trim)
 
 import Flow
 
@@ -27,10 +27,6 @@ processColumn ("*":values) =
     foldl (*) 1 (map read values)
 processColumn ("+":values) =
     sum (map read values)
-
-trim :: String -> String
-trim = f . f
-   where f = reverse . dropWhile isSpace
 
 moveSymToFront :: [String] -> [String]
 moveSymToFront (x:xs) =

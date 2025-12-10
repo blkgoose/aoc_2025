@@ -7,6 +7,7 @@ import Day4
 import Day5
 import Day6
 import Day7
+import Day8
 import Flow
 import Test.Hspec
 
@@ -19,6 +20,7 @@ main = hspec $ do
   day5Spec
   day6Spec
   day7Spec
+  day8Spec
 
 day1Spec :: Spec
 day1Spec = do
@@ -371,3 +373,31 @@ day7Spec = do
         |> Day7.execute
         |> snd
         |> (`shouldBe` 40)
+
+day8Spec :: Spec
+day8Spec = do
+  describe "day 8 tests" $ do
+    it "multiplies the number of circuits" $ do
+      [ "162,817,812",
+        "57,618,57",
+        "906,360,560",
+        "592,479,940",
+        "352,342,300",
+        "466,668,158",
+        "542,29,236",
+        "431,825,988",
+        "739,650,466",
+        "52,470,668",
+        "216,146,977",
+        "819,987,18",
+        "117,168,530",
+        "805,96,715",
+        "346,949,466",
+        "970,615,88",
+        "941,993,340",
+        "862,61,35",
+        "984,92,344",
+        "425,690,689" ]
+        |> Day8.execute
+        |> fst
+        |> (`shouldBe` 0)

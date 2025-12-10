@@ -33,7 +33,7 @@ part2 :: Grid Spot -> Int
 part2 grid =
     let ((_, colMin), (rowMax, colMax)) = bounds (traceGrid grid)
         lastRow = [ grid ! (rowMax, col) | col <- [colMin .. colMax] ]
-    in filter (isBeam) lastRow
+    in filter isBeam lastRow
         |> foldl (\acc (Beam n) -> acc + n) 0
     where
         isBeam :: Spot -> Bool
@@ -91,5 +91,5 @@ traceGrid arr =
         showCell Space                 = "."
         buildRow r = [ showCell (arr ! (r, c)) | c <- [colMin .. colMax] ]
         gridLines = [ unwords (buildRow r) | r <- [rowMin .. rowMax] ]
-        traced = foldl' (\a line -> trace' line a) arr gridLines
+        traced = foldl' (flip trace') arr gridLines
     in traced

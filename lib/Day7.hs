@@ -84,11 +84,11 @@ parseSpot '.' = Space
 traceGrid :: Grid Spot -> Grid Spot
 traceGrid arr =
     let ((rowMin, colMin), (rowMax, colMax)) = bounds arr
-        showCell (Beam n)            = show n
+        showCell (Beam n)              = show n
         showCell (TriggeredSplitter _) = "T"
-        showCell Splitter            = "^"
-        showCell Generator           = "S"
-        showCell Space               = "."
+        showCell Splitter              = "^"
+        showCell Generator             = "S"
+        showCell Space                 = "."
         buildRow r = [ showCell (arr ! (r, c)) | c <- [colMin .. colMax] ]
         gridLines = [ unwords (buildRow r) | r <- [rowMin .. rowMax] ]
         traced = foldl' (\a line -> trace' line a) arr gridLines

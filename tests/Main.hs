@@ -400,4 +400,4 @@ day8Spec = do
         "425,690,689" ]
         |> Day8.execute
         |> fst
-        |> (`shouldBe` 0)
+        |> (`shouldBe` 40)

@@ -5,9 +5,8 @@ import Utils (trace, range)
 import qualified Debug.Trace as Debug
 
 execute :: [String] -> (Int, Int)
-execute lines =
-    let input = head lines
-        groups = splitOn "," input
+execute (input:_) =
+    let groups = splitOn "," input
         allGroups = map (map read . splitOn "-") groups :: [[Int]]
         rangeIds = concatMap (\[start, end] -> range start end) allGroups
 

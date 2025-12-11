@@ -17,15 +17,8 @@ execute span input =
         paired = [(a, b, distanceBetween a b) | a <- vector, b <- vector, a < b]
                 |> sortOn (\(_, _, d) -> d)
                 |> map (\(a, b, _) -> (a, b))
-                |> take span
         sets = [[x] | x <- vector]
-        groups = foldl (\s (a, b) -> union s a b) sets paired
-        counted = map length groups
-            |> sort
-            |> reverse
-            |> take 3
-            |> product
-    in (counted, 0)
+    in (part1 span paired sets, 0)
     where
         vectorize :: String -> Vector
         vectorize line = 
@@ -35,8 +28,19 @@ execute span input =
                 z = read (line' !! 2) :: Int
              in (x, y, z)
 
-union :: [[Vector]] -> Vector -> Vector -> [[Vector]]
-union sets a b =
+part1 :: Int -> [(Vector, Vector)] -> [[Vector]] -> Int
+part1 span pairs sets =
+    let paired = take span pairs
+        groups = foldl union sets paired
+        top3 = map length groups
+            |> sort
+            |> reverse
+            |> take 3
+            |> product
+    in top3
+
+union :: [[Vector]] -> (Vector, Vector) -> [[Vector]]
+union sets (a, b) =
     let seta = findSet sets a
         setb = findSet sets b
     in if seta == setb || null seta || null setb

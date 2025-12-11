@@ -3,6 +3,8 @@ module Day8 (execute) where
 import Data.List (sort, sortOn)
 import Data.List.Split (splitOn)
 import Data.Maybe (fromJust)
+import qualified Data.Set as Set
+import Data.Set (Set)
 import Flow
 
 type Vector = (Int, Int, Int)
@@ -14,7 +16,7 @@ execute span input =
         [(a, b, distanceBetween a b) | a <- vector, b <- vector, a < b]
           |> sortOn (\(_, _, d) -> d)
           |> map (\(a, b, _) -> (a, b))
-      sets = [[x] | x <- vector]
+      sets = [Set.singleton x | x <- vector]
    in (part1 span paired sets, part2 paired sets)
   where
     vectorize :: String -> Vector
@@ -25,12 +27,12 @@ execute span input =
           z = read (line' !! 2) :: Int
        in (x, y, z)
 
-part2 :: [(Vector, Vector)] -> [[Vector]] -> Int
+part2 :: [(Vector, Vector)] -> [Set Vector] -> Int
 part2 pairs sets =
   let ((a, _, _), (b, _, _)) = foldl union (sets, Nothing) pairs |> snd |> fromJust
    in a * b
 
-part1 :: Int -> [(Vector, Vector)] -> [[Vector]] -> Int
+part1 :: Int -> [(Vector, Vector)] -> [Set Vector] -> Int
 part1 span pairs sets =
   let paired = take span pairs
       groups = foldl union (sets, Nothing) paired |> fst
@@ -42,18 +44,18 @@ part1 span pairs sets =
           |> product
    in top3
 
-union :: ([[Vector]], Maybe (Vector, Vector)) -> (Vector, Vector) -> ([[Vector]], Maybe (Vector, Vector))
+union :: ([Set Vector], Maybe (Vector, Vector)) -> (Vector, Vector) -> ([Set Vector], Maybe (Vector, Vector))
 union (sets, last) (a, b) =
   let seta = findSet sets a
       setb = findSet sets b
    in if seta == setb || null seta || null setb
         then (sets, last)
-        else ([s | s <- sets, s /= seta, s /= setb] ++ [seta ++ setb], Just (a, b))
+        else ([s | s <- sets, s /= seta, s /= setb] ++ [Set.union seta setb], Just (a, b))
 
-findSet :: [[Vector]] -> Vector -> [Vector]
+findSet :: [Set Vector] -> Vector -> Set Vector
 findSet sets v =
   case [s | s <- sets, v `elem` s] of
-    [] -> []
+    [] -> Set.empty
     (s : _) -> s
 
 connected :: (Vector, Vector) -> (Vector, Vector) -> Bool

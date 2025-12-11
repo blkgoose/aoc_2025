@@ -10,8 +10,11 @@ type Vector = (Int, Int)
 
 execute :: [String] -> (Int, Int)
 execute input =
-    let [a, b] = map parse input
-     in (area a b, 0)
+    let p = map parse input
+        (_, _, a) = [(a, b, area a b) | a <- p, b <- p, a < b]
+                |> sortBy (\(_, _, area1) (_, _, area2) -> compare area2 area1)
+                |> head
+     in (a, 0)
      where
          parse :: String -> Vector
          parse line =

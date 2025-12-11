@@ -22,34 +22,39 @@ execute input =
 part1 :: [Vector] -> Int
 part1 points =
   orderByLargestArea points
-    |> take 1
-    |> \[(_, _, area)] -> area
+    |> \((_, _, area):_) -> area
 
 part2 :: [Vector] -> Int
 part2 points =
   orderByLargestArea points
-    |> map (\(a, b, a') -> (a, b, a', not $ intersectsAny (a, b) (pointsWithout (a, b))))
-    |> Utils.traceList "Areas with no intersections:"
-    |> flip Utils.trace' 0
+    |> filter (\(a, b, _) -> not $ intersectPolygon (a, b) (polygon points))
+    |> Utils.traceList "Points:"
+    |> \((_, _, area):_) -> area
+
+findInterections :: Vector -> Vector -> [(Vector, Vector)] -> [(Vector, Vector)]
+findInterections a b polygonLines =
+   filter (intesect (a, b)) polygonLines
+
+intersectPolygon :: (Vector, Vector) -> [(Vector, Vector)] -> Bool
+intersectPolygon line polygonLines =
+  any (intesect line) polygonLines
+
+intesect :: (Vector, Vector) -> (Vector, Vector) -> Bool
+intesect ((ax, ay), (bx, by)) edge@((ex, ey), _) =
+   let minX = min ax bx
+       maxX = max ax bx
+       minY = min ay by
+       maxY = max ay by
+   in if isVertical edge
+      then ex > minX && ex < maxX
+      else ey > minY && ey < maxY
   where
-    pointsWithout :: (Vector, Vector) -> [Vector]
-    pointsWithout (a, b) =
-      filter (\p -> p /= a && p /= b) points
+    isVertical ((x1, _), (x2, _)) = x1 == x2
 
-intersectsAny :: (Vector, Vector) -> [Vector] -> Bool
-intersectsAny bounds points =
-  any (\point -> instesect bounds point) points
+polygon :: [Vector] -> [(Vector, Vector)]
+polygon points@(x:t) = zip points (t ++ [x])
 
-instesect :: (Vector, Vector) -> Vector -> Bool
-instesect bound point =
-  let (a, b) = bound
-      (px, py) = point
-      minX = min (fst a) (fst b)
-      maxX = max (fst a) (fst b)
-      minY = min (snd a) (snd b)
-      maxY = max (snd a) (snd b)
-   in px >= minX && px <= maxX && py >= minY && py <= maxY
-
+orderByLargestArea :: [Vector] -> [(Vector, Vector, Int)]
 orderByLargestArea points =
   [(a, b, area a b) | a <- points, b <- points, a < b]
     |> sortBy (\(_, _, area1) (_, _, area2) -> compare area2 area1)

@@ -424,6 +424,15 @@ day9Spec = do
         |> fst
         |> (`shouldBe` 50)
 
+    it "finds the largest area if point is on the edge" $ do
+      [ "2,3",
+        "9,5",
+        "7,3"
+        ]
+        |> Day9.execute
+        |> snd
+        |> (`shouldBe` 24)
+
     it "finds the largest area inside the bounds" $ do
       [ "7,1",
         "11,1",

@@ -1,13 +1,10 @@
 module Day8 (execute) where
 
 import Data.List.Split (splitOn)
-import Data.List (sortBy, nub, sortOn, groupBy, findIndex, sort)
-import Data.Ord (comparing)
-import Data.Function (on)
+import Data.List (sortOn, sort)
+import Data.Maybe (fromJust)
 
 import Flow
-
-import Utils (traceList)
 
 type Vector = (Int, Int, Int)
 
@@ -18,7 +15,7 @@ execute span input =
                 |> sortOn (\(_, _, d) -> d)
                 |> map (\(a, b, _) -> (a, b))
         sets = [[x] | x <- vector]
-    in (part1 span paired sets, 0)
+    in (part1 span paired sets, part2 paired sets)
     where
         vectorize :: String -> Vector
         vectorize line = 
@@ -28,10 +25,15 @@ execute span input =
                 z = read (line' !! 2) :: Int
              in (x, y, z)
 
+part2 :: [(Vector, Vector)] -> [[Vector]] -> Int
+part2 pairs sets =
+    let ((a,_,_),(b,_,_)) = foldl union (sets, Nothing) pairs |> snd |> fromJust
+    in a * b
+
 part1 :: Int -> [(Vector, Vector)] -> [[Vector]] -> Int
 part1 span pairs sets =
     let paired = take span pairs
-        groups = foldl union sets paired
+        groups = foldl union (sets, Nothing) paired |> fst
         top3 = map length groups
             |> sort
             |> reverse
@@ -39,13 +41,13 @@ part1 span pairs sets =
             |> product
     in top3
 
-union :: [[Vector]] -> (Vector, Vector) -> [[Vector]]
-union sets (a, b) =
+union :: ([[Vector]], Maybe (Vector, Vector)) -> (Vector, Vector) -> ([[Vector]], Maybe (Vector, Vector))
+union (sets, last) (a, b) =
     let seta = findSet sets a
         setb = findSet sets b
     in if seta == setb || null seta || null setb
-       then sets
-       else [s | s <- sets, s /= seta, s /= setb] ++ [seta ++ setb]
+       then (sets, last)
+       else ([s | s <- sets, s /= seta, s /= setb] ++ [seta ++ setb], Just (a, b))
 
 findSet :: [[Vector]] -> Vector -> [Vector]
 findSet sets v =

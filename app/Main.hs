@@ -33,7 +33,7 @@ runDay day = do
         5 -> Just . Day5.execute
         6 -> Just . Day6.execute
         7 -> Just . Day7.execute
-        8 -> Just . Day8.execute
+        8 -> Just . (Day8.execute 1000)
         _ -> \_ -> Nothing
 
   run input

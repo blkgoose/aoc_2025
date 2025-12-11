@@ -398,6 +398,6 @@ day8Spec = do
         "862,61,35",
         "984,92,344",
         "425,690,689" ]
-        |> Day8.execute
+        |> Day8.execute 10
         |> fst
         |> (`shouldBe` 40)

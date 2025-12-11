@@ -9,7 +9,7 @@ type Coord = (Int, Int)
 type Grid a = Array Coord a
 
 trace :: (Show a) => a -> a
-trace x = Debug.trace (show x) x
+trace x = trace' x x
 
 trace' :: (Show a) => a -> b -> b
 trace' x v = Debug.trace (show x) v
@@ -38,3 +38,8 @@ makeGrid rows@(header : _) =
       w = length header
       spots = [((i, j), rows !! i !! j) | i <- [0 .. h - 1], j <- [0 .. w - 1]]
    in array ((0, 0), (h - 1, w - 1)) spots
+
+traceList :: Show a => String -> [a] -> [a]
+traceList msg lst =
+    let lst' = msg ++ "\n" ++ (unlines $ map show lst)
+    in Debug.trace lst' $ lst

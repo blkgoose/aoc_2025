@@ -2,12 +2,13 @@ module Day8 (execute) where
 
 import Data.List (sort, sortOn)
 import Data.List.Split (splitOn)
+import qualified Data.Map as Map
 import Data.Maybe (fromJust)
-import qualified Data.Set as Set
-import Data.Set (Set)
 import Flow
 
 type Vector = (Int, Int, Int)
+
+type UF a = Map.Map a a
 
 execute :: Int -> [String] -> (Int, Int)
 execute span input =
@@ -16,7 +17,7 @@ execute span input =
         [(a, b, distanceBetween a b) | a <- vector, b <- vector, a < b]
           |> sortOn (\(_, _, d) -> d)
           |> map (\(a, b, _) -> (a, b))
-      sets = [Set.singleton x | x <- vector]
+      sets = Map.fromList [(x, x) | x <- vector]
    in (part1 span paired sets, part2 paired sets)
   where
     vectorize :: String -> Vector
@@ -27,15 +28,15 @@ execute span input =
           z = read (line' !! 2) :: Int
        in (x, y, z)
 
-part2 :: [(Vector, Vector)] -> [Set Vector] -> Int
+part2 :: [(Vector, Vector)] -> UF Vector -> Int
 part2 pairs sets =
   let ((a, _, _), (b, _, _)) = foldl union (sets, Nothing) pairs |> snd |> fromJust
    in a * b
 
-part1 :: Int -> [(Vector, Vector)] -> [Set Vector] -> Int
+part1 :: Int -> [(Vector, Vector)] -> UF Vector -> Int
 part1 span pairs sets =
   let paired = take span pairs
-      groups = foldl union (sets, Nothing) paired |> fst
+      groups = foldl union (sets, Nothing) paired |> fst |> toList
       top3 =
         map length groups
           |> sort
@@ -44,19 +45,25 @@ part1 span pairs sets =
           |> product
    in top3
 
-union :: ([Set Vector], Maybe (Vector, Vector)) -> (Vector, Vector) -> ([Set Vector], Maybe (Vector, Vector))
+union :: (Ord a) => (UF a, Maybe (a, a)) -> (a, a) -> (UF a, Maybe (a, a))
 union (sets, last) (a, b) =
   let seta = findSet sets a
       setb = findSet sets b
-   in if seta == setb || null seta || null setb
+   in if seta == setb
         then (sets, last)
-        else ([s | s <- sets, s /= seta, s /= setb] ++ [Set.union seta setb], Just (a, b))
+        else (Map.insert seta setb sets, Just (a, b))
 
-findSet :: [Set Vector] -> Vector -> Set Vector
-findSet sets v =
-  case [s | s <- sets, v `elem` s] of
-    [] -> Set.empty
-    (s : _) -> s
+findSet :: (Ord a) => UF a -> a -> a
+findSet sets v = if parent == v then v else findSet sets parent
+  where
+    parent = Map.findWithDefault v v sets
+
+toList :: (Ord a) => UF a -> [[a]]
+toList sets =
+  let roots = Map.keys sets
+   in Map.elems $ Map.fromListWith (++) [(root x, [x]) | x <- roots]
+  where
+    root x = findSet sets x
 
 connected :: (Vector, Vector) -> (Vector, Vector) -> Bool
 connected (a1, b1) (a2, b2) =

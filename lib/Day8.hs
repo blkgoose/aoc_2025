@@ -7,7 +7,7 @@ import Data.Function (on)
 
 import Flow
 
-import Utils (trace, trace')
+import Utils (traceList)
 
 type Vector = (Int, Int, Int)
 
@@ -17,16 +17,15 @@ execute input =
         paired = 
             foldl (pairClosest vector) [] vector
                 |> sortBy (comparing snd)
-                |> nub
+                |> traceList "Paired Vectors:"
                 |> map fst
-                |> traceList
-                |> take 10
+                |> take 11
         grouped = groupAllBy connected paired
         exploded = grouped
             |> map (nub . concatMap (\(a, b) -> [a, b]))
             |> sortBy (comparing length)
             |> reverse
-            |> traceList
+            |> traceList "Grouped Vectors:"
             |> take 3
         counted = product $ map length exploded
     in (counted, 0)
@@ -60,12 +59,19 @@ groupAllBy pred list = go list []
 
 pairClosest :: [Vector] -> [((Vector, Vector), Double)] -> Vector -> [((Vector, Vector), Double)]
 pairClosest vectors pairs v =
-    let (closest: _) = vectors
+    let
+        alreadyConnected = pairs
+                |> map fst
+                |> filter (\(_, c) -> c == v)
+                |> map fst
+                |> traceList ("Already connected to " ++ show v ++ ":")
+        (closest: _) = vectors
             |> filter (/= v)
+            |> filter (\vec -> not (vec `elem` alreadyConnected))
+            |> traceList ("Available Vectors for "++ show v ++ ":")
             |> sortBy (comparing (distanceBetween v))
         distance = distanceBetween v closest
-        [a, b] = sortBy (comparing distanceFromZero) [v, closest]
-    in pairs ++ [((a, b), distance)]
+    in pairs ++ [((v, closest), distance)]
 
 distanceBetween :: Vector -> Vector -> Double
 distanceBetween (x1, y1, z1) (x2, y2, z2) =
@@ -73,6 +79,3 @@ distanceBetween (x1, y1, z1) (x2, y2, z2) =
 
 distanceFromZero :: Vector -> Double
 distanceFromZero = distanceBetween (0, 0, 0)
-
-traceList :: Show a => [a] -> [a]
-traceList lst = foldl (\acc x -> acc ++ [(trace x)]) [] lst

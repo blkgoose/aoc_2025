@@ -14,6 +14,9 @@ trace x = trace' x x
 trace' :: (Show a) => a -> b -> b
 trace' x v = Debug.trace (show x) v
 
+trace_ :: (Show a) => String -> a -> a
+trace_ msg x = Debug.trace (msg ++ show x) x
+
 range :: Int -> Int -> [Int]
 range a b
   | a <= b = [a .. b]

@@ -423,3 +423,17 @@ day9Spec = do
         |> Day9.execute
         |> fst
         |> (`shouldBe` 50)
+
+    it "finds the largest area inside the bounds" $ do
+      [ "7,1",
+        "11,1",
+        "11,7",
+        "9,7",
+        "9,5",
+        "2,5",
+        "2,3",
+        "7,3"
+        ]
+        |> Day9.execute
+        |> snd
+        |> (`shouldBe` 24)

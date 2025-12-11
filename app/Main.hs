@@ -9,6 +9,7 @@ import Day5
 import Day6
 import Day7
 import Day8
+import Day9
 import Flow
 import System.Environment (getArgs)
 
@@ -34,6 +35,7 @@ runDay day = do
         6 -> Just . Day6.execute
         7 -> Just . Day7.execute
         8 -> Just . (Day8.execute 1000)
+        9 -> Just . Day9.execute
         _ -> \_ -> Nothing
 
   run input

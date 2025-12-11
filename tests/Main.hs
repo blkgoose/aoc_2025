@@ -8,6 +8,7 @@ import Day5
 import Day6
 import Day7
 import Day8
+import Day9
 import Flow
 import Test.Hspec
 
@@ -21,6 +22,7 @@ main = hspec $ do
   day6Spec
   day7Spec
   day8Spec
+  day9Spec
 
 day1Spec :: Spec
 day1Spec = do
@@ -401,3 +403,14 @@ day8Spec = do
         ]
         |> Day8.execute 10
         |> (`shouldBe` (40, 25272))
+
+day9Spec :: Spec
+day9Spec = do
+  describe "day 9 tests" $ do
+    it "calculates the area correctly" $ do
+      [ "2,5",
+        "11,1"
+        ]
+        |> Day9.execute
+        |> fst
+        |> (`shouldBe` 50)

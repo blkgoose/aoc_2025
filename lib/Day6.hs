@@ -16,7 +16,7 @@ execute input =
       part2 =
         input
           |> transpose
-          |> groupWhile (\l -> trim l /= "")
+          |> groupWhile (trim .> (/= ""))
           |> map moveSymToFront
           |> map processColumn
           |> sum

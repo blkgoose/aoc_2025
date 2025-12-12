@@ -27,8 +27,11 @@ part1 points =
 part2 :: [Vector] -> Int
 part2 points =
   orderByLargestArea points
+    |> map (\(a, b, area) -> (a, b, area, findInterections a b (polygon points)))
+    |> Utils.traceList "Intersections:"
+    |> map (\(a, b, area, intersections) -> (a, b, area))
     |> filter (\(a, b, _) -> not $ intersectPolygon (a, b) (polygon points))
-    |> Utils.traceList "Points:"
+    -- |> Utils.traceList "Points:"
     |> \((_, _, area):_) -> area
 
 findInterections :: Vector -> Vector -> [(Vector, Vector)] -> [(Vector, Vector)]
@@ -40,16 +43,15 @@ intersectPolygon line polygonLines =
   any (intesect line) polygonLines
 
 intesect :: (Vector, Vector) -> (Vector, Vector) -> Bool
-intesect ((ax, ay), (bx, by)) edge@((ex, ey), _) =
-   let minX = min ax bx
-       maxX = max ax bx
-       minY = min ay by
-       maxY = max ay by
-   in if isVertical edge
-      then ex > minX && ex < maxX
-      else ey > minY && ey < maxY
+intesect ((ax, ay), (bx, by)) ((ex1, ey1), (ex2, ey2)) =
+  if ex1 == ex2
+    then ex1 `between` (ax, bx) && (ay `between` (ey1, ey2) || by `between` (ey1, ey2))
+    else ey1 `between` (ay, by) && (ax `between` (ex1, ex2) || bx `between` (ex1, ex2))
   where
-    isVertical ((x1, _), (x2, _)) = x1 == x2
+    between v (a, b) =
+        let a' = min a b
+            b' = max a b
+         in v > a' && v < b'
 
 polygon :: [Vector] -> [(Vector, Vector)]
 polygon points@(x:t) = zip points (t ++ [x])

@@ -27,11 +27,7 @@ part1 points =
 part2 :: [Vector] -> Int
 part2 points =
   orderByLargestArea points
-    |> map (\(a, b, area) -> (a, b, area, findInterections a b (polygon points)))
-    |> Utils.traceList "Intersections:"
-    |> map (\(a, b, area, intersections) -> (a, b, area))
     |> filter (\(a, b, _) -> not $ intersectPolygon (a, b) (polygon points))
-    -- |> Utils.traceList "Points:"
     |> \((_, _, area):_) -> area
 
 findInterections :: Vector -> Vector -> [(Vector, Vector)] -> [(Vector, Vector)]
@@ -45,13 +41,17 @@ intersectPolygon line polygonLines =
 intesect :: (Vector, Vector) -> (Vector, Vector) -> Bool
 intesect ((ax, ay), (bx, by)) ((ex1, ey1), (ex2, ey2)) =
   if ex1 == ex2
-    then ex1 `between` (ax, bx) && (ay `between` (ey1, ey2) || by `between` (ey1, ey2))
-    else ey1 `between` (ay, by) && (ax `between` (ex1, ex2) || bx `between` (ex1, ex2))
+    then ex1 `between` (ax, bx) && ((min ey1 ey2) `betweenStrict` (ay, by) || (max ey1 ey2) `betweenStrict` (ay, by))
+    else ey1 `between` (ay, by) && ((min ex1 ex2) `betweenStrict` (ax, bx) || (max ex1 ex2) `betweenStrict` (ax, bx))
   where
     between v (a, b) =
         let a' = min a b
             b' = max a b
          in v > a' && v < b'
+    betweenStrict v (a, b) =
+        let a' = min a b
+            b' = max a b
+         in v >= a' && v <= b'
 
 polygon :: [Vector] -> [(Vector, Vector)]
 polygon points@(x:t) = zip points (t ++ [x])

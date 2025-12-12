@@ -30,10 +30,6 @@ part2 points =
     |> filter (\(a, b, _) -> not $ intersectPolygon (a, b) (polygon points))
     |> \((_, _, area):_) -> area
 
-findInterections :: Point -> Point -> [(Point, Point)] -> [(Point, Point)]
-findInterections a b polygonLines =
-   filter (intesect (a, b)) polygonLines
-
 intersectPolygon :: (Point, Point) -> [(Point, Point)] -> Bool
 intersectPolygon line polygonLines =
   any (intesect line) polygonLines

@@ -26,9 +26,28 @@ part1 points =
 
 part2 :: [Point] -> Int
 part2 points =
-  orderByLargestArea points
-    |> filter (\(a, b, _) -> not $ intersectPolygon (a, b) (polygon points))
+  let poly = polygon points
+   in orderByLargestArea points
+    |> filter (\(a, b, _) -> not $ intersectPolygon (a, b) poly)
+    |> filter (\(a, b, _) -> not $ any (isPointInPolygon poly) [a, b])
     |> \((_, _, area):_) -> area
+
+isPointInPolygon :: [(Point, Point)] -> Point -> Bool
+isPointInPolygon poly (px, py) =
+    let rays = [ ((px, py), (maxX + 1, py))
+               , ((px, py), (minX - 1, py))
+               , ((px, py), (px, maxY + 1))
+               , ((px, py), (px, minY - 1))
+               ]
+        maxX = maximum $ map (fst . fst) poly
+        minX = minimum $ map (fst . fst) poly
+        maxY = maximum $ map (snd . fst) poly
+        minY = minimum $ map (snd . fst) poly
+     in map (\ray -> countIntersections ray poly) rays
+        |> all odd
+     where
+       countIntersections ray polyLines =
+         length $ filter (intesect ray) polyLines
 
 intersectPolygon :: (Point, Point) -> [(Point, Point)] -> Bool
 intersectPolygon line polygonLines =

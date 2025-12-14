@@ -2,6 +2,7 @@ module Utils where
 
 import Data.Array
 import Data.Char (isSpace)
+import Data.Foldable (toList)
 import qualified Debug.Trace as Debug
 
 type Coord = (Int, Int)
@@ -42,7 +43,7 @@ makeGrid rows@(header : _) =
       spots = [((i, j), rows !! i !! j) | i <- [0 .. h - 1], j <- [0 .. w - 1]]
    in array ((0, 0), (h - 1, w - 1)) spots
 
-traceList :: (Show a) => String -> [a] -> [a]
+traceList :: (Show a, Foldable t) => String -> t a -> t a
 traceList msg lst =
-  let lst' = msg ++ "\n" ++ (unlines $ map show lst)
-   in Debug.trace lst' $ lst
+  let lst' = msg ++ "\n" ++ (unlines $ map show (toList lst))
+   in Debug.trace lst' lst

@@ -81,7 +81,7 @@ fillPolygon edges =
 
 
 polygon :: [Point] -> [(Point, Point)]
-polygon points@(x:t) = zip points (t ++ [x])
+polygon points@(x : t) = zip points (t ++ [x])
 
 orderByLargestArea :: [Point] -> [(Point, Point, Int)]
 orderByLargestArea points =

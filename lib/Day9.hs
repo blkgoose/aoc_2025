@@ -51,30 +51,40 @@ part2 points =
    in orderByLargestArea points
         |> find
           ( \(a, b, _) ->
-              vertices a b
-                |> all
-                  ( \(x, y) ->
-                      let segments = cache ! y
-                          left = segments
-                              |> filter (\((ax, ay), (bx, by)) ->
-                                  if ay == by
-                                  then if x == max ax bx then True
-                                       else if x == min ax bx then False
-                                       else x > min ax bx && x < max ax bx
-                                  else ax <= x
-                              )
-                              |> length
-                          right = segments
-                              |> filter (\((ax, ay), (bx, by)) ->
-                                  if ay == by
-                                  then
-                                      if x == max ax bx then True
-                                      else x > min ax bx && x < max ax bx
-                                  else ax >= x
-                              )
-                              |> length
-                       in not (even left && even right)
-                  )
+              let rectangle = vertices a b
+                  v = vertices a b
+                    |> all
+                      ( \(x, y) ->
+                          let segments = cache ! y
+                              left = segments
+                                  |> filter (\((ax, ay), (bx, by)) ->
+                                      if ay == by
+                                      then if x == max ax bx then True
+                                           else if x == min ax bx then False
+                                           else x > min ax bx && x < max ax bx
+                                      else ax <= x
+                                  )
+                                  |> length
+                              right = segments
+                                  |> filter (\((ax, ay), (bx, by)) ->
+                                      if ay == by
+                                      then
+                                          if x == max ax bx then True
+                                          else x > min ax bx && x < max ax bx
+                                      else ax >= x
+                                  )
+                                  |> length
+                           in not (even left && even right)
+                      )
+
+                  -- TODO: add all contained points inside the produced rectangle
+                  allContainedPointsInRectangle =
+                    [ (x, y)
+                      | x <- [min (fst a) (fst b) .. max (fst a) (fst b)],
+                        y <- [((min (snd a) (snd b)) + 1) .. ((max (snd a) (snd b)) - 1)]
+                    ] |> any isPointInPolygon
+                  isPointInPolygon p = any (== p) points
+               in v && not allContainedPointsInRectangle
           )
         |> (\x -> case x of
               Just (a, b, area) -> area

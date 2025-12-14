@@ -437,3 +437,21 @@ day9Spec = do
         |> Day9.execute
         |> snd
         |> (`shouldBe` 24)
+
+    it "finds the lastest area in a concave shape" $ do
+      [ "8,2",
+        "8,4",
+        "6,4",
+        "6,6",
+        "4,6",
+        "4,8",
+        "8,8",
+        "8,10",
+        "4,10",
+        "4,12",
+        "12,12",
+        "12,2"
+        ]
+        |> Day9.execute
+        |> snd
+        |> (`shouldBe` 55)

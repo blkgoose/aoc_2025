@@ -42,29 +42,42 @@ part2 points =
                 ( y,
                   filter
                     ( \((ax, ay), (bx, by)) ->
-                        if ax == bx then y > min ay by && y < max ay by -- strict, no vertical lines vertices
-                        else y >= min ay by && y <= max ay by -- inclusive of horizontal lines
+                        y >= min ay by && y <= max ay by
                     )
                     poly
                 )
             )
-          |> Utils.traceList "Cache: "
           |> M.fromList
    in orderByLargestArea points
         |> find
           ( \(a, b, _) ->
-              vertices a b |> Utils.trace_ "Checking: "
+              vertices a b
                 |> all
                   ( \(x, y) ->
-                      let segOnLine = cache ! y
-                          left = segOnLine |> filter (\((ax, _), (bx, _)) -> x < min ax bx) |> length |> Utils.trace_ ("Left at " ++ show (x, y) ++ ": ")
-                          right = segOnLine |> filter (\((ax, _), (bx, _)) -> x > max ax bx) |> length |> Utils.trace_ ("Right at " ++ show (x, y) ++ ": ")
-                          res = not (even left && even right)
-                       in Utils.trace res
+                      let segments = cache ! y
+                          left = segments
+                              |> filter (\((ax, ay), (bx, by)) ->
+                                  if ay == by
+                                  then if x == max ax bx then True
+                                       else if x == min ax bx then False
+                                       else x > min ax bx && x < max ax bx
+                                  else ax <= x
+                              )
+                              |> length
+                          right = segments
+                              |> filter (\((ax, ay), (bx, by)) ->
+                                  if ay == by
+                                  then
+                                      if x == max ax bx then True
+                                      else x > min ax bx && x < max ax bx
+                                  else ax >= x
+                              )
+                              |> length
+                       in not (even left && even right)
                   )
           )
         |> (\x -> case x of
-              Just (a, b, area) -> Utils.trace' ("Found between " ++ show a ++ " and " ++ show b ++ " with area " ++ show area) area
+              Just (a, b, area) -> area
               Nothing -> 0
            )
   where

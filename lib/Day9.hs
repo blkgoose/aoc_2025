@@ -90,8 +90,4 @@ orderByLargestArea points =
 
 area :: Point -> Point -> Int
 area (x1, y1) (x2, y2) =
-  let maxX = max x1 x2
-      minX = min x1 x2
-      maxY = max y1 y2
-      minY = min y1 y2
-   in (maxX - minX + 1) * (maxY - minY + 1)
+   (abs(x1 - x2) + 1) * (abs(y1 - y2) + 1)
